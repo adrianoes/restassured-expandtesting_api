@@ -1,0 +1,155 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="API Test Suite">
+
+    <!-- RUN ALL TESTS -->
+    <test name="All Tests">
+        <classes>
+            <class name="tests.Health"/>
+            <class name="tests.Users"/>
+            <!--            <class name="tests.Notes"/>-->
+        </classes>
+    </test>
+
+    <!--    ONLY NEGATIVE TESTS -->
+    <!--    <test name="Only Negative Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Negative"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Health"/>-->
+    <!--            <class name="tests.Users"/>-->
+    <!--            <class name="tests.Notes"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    ONLY TESTS WITHOUT THE NEGATIVE TAG -->
+    <!--    <test name="All Except Negative Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <exclude name="Negative"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Health"/>-->
+    <!--            <class name="tests.Users"/>-->
+    <!--            <class name="tests.Notes"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    ALL USERS TESTS -->
+    <!--    <test name="All Users Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Users"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Users"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    ONLY USERS NEGATIVE TESTS -->
+    <!--    <test name="Only Users Negative Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Users"/>-->
+    <!--                <include name="Negative"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Users"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    USERS WITHOUT NEGATIVE TESTS -->
+    <!--    <test name="Users Without Negative Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Users"/>-->
+    <!--                <exclude name="Negative"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Users"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    ALL NOTES TESTS -->
+    <!--    <test name="All Notes Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Notes"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Notes"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    ONLY NOTES NEGATIVE TESTS -->
+    <!--    <test name="Only Notes Negative Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Notes"/>-->
+    <!--                <include name="Negative"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Notes"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    NOTES WITHOUT NEGATIVE TESTS -->
+    <!--    <test name="Notes Without Negative Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Notes"/>-->
+    <!--                <exclude name="Negative"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Notes"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    ALL HEALTH TESTS -->
+    <!--    <test name="All Health Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Health"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Health"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    ONLY HEALTH NEGATIVE TESTS -->
+    <!--    <test name="Only Health Negative Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Health"/>-->
+    <!--                <include name="Negative"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Health"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+    <!--    HEALTH WITHOUT NEGATIVE TESTS -->
+    <!--    <test name="Health Without Negative Tests">-->
+    <!--        <groups>-->
+    <!--            <run>-->
+    <!--                <include name="Health"/>-->
+    <!--                <exclude name="Negative"/>-->
+    <!--            </run>-->
+    <!--        </groups>-->
+    <!--        <classes>-->
+    <!--            <class name="tests.Health"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
+</suite>
