@@ -1,0 +1,3 @@
+Cannot commit empty directory.
+This diectory is needed to save files generated after each step of a test which might share data between requests inside the same test.
+This file is created so this repository will be avialable after commiting and so data between requests can be shared.
