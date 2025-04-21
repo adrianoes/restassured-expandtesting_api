@@ -37,11 +37,10 @@ API testing using [expandtesting docs](https://practice.expandtesting.com/notes/
   - Right click :point_right: **My Computer** and select :point_right: **Properties**. On the :point_right: **Advanced** tab, select :point_right: **Environment Variables**, :point_right: **New** in System Variables frame and create a variable called MAVEN_HOME containing the path that leads to where the JDK software is located (e.g. C:\Program Files\Maven\apache-maven-3.9.9).
   - Right click :point_right: **My Computer** and select :point_right: **Properties**. On the :point_right: **Advanced** tab, select :point_right: **Environment Variables**, and then edit Path system variable with the new %MAVEN_HOME%\bin entry.
   - Right click :point_right: **My Computer** and select :point_right: **Properties**. On the :point_right: **Advanced** tab, select :point_right: **Environment Variables**, and then edit Path user variable with the new %MAVEN_HOME%\bin entry.
-- Open IntelliJ IDEA, hit :point_right: **New Project**, hit :point_right: **Java** in New Project frame, hit :point_right: **Maven** as Build system option and check the checkboxes below: 
-  - :white_check_mark: **Add sample code**, 
-  - :white_check_mark: **Generate code with onboarding tips**. 
-Hit :point_right: **Create**. 
-- Open IntelliJ IDEA, hit :point_right: **File**, hit :point_right: **Settings**, hit :point_right: **Plugins** and in the Marketplace tab, look for Karate and install the one from Karate Labs Inc.
+- Open IntelliJ IDEA, hit :point_right: **New Project**, hit :point_right: **Java** in New Project frame, hit :point_right: **Maven** as Build system option and check the checkboxes below:
+  - :white_check_mark: **Add sample code**,
+  - :white_check_mark: **Generate code with onboarding tips**.
+Hit :point_right: **Create**.
 - See [TestNG](https://mvnrepository.com/artifact/org.testng/testng/7.4.0), copy the maven dependency code and paste it in the dependency tag.
 - See [REST Assured](https://mvnrepository.com/artifact/io.rest-assured/rest-assured/4.4.0), copy the maven dependency code and paste it in the dependency tag.
 - See [Jackson Databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.15.0), copy the maven dependency code and paste it in the dependency tag.
@@ -112,7 +111,7 @@ Hit :point_right: **Create**.
 
 # Tests:
 
-- Open command prompt in the pom.xml directory (e.g. C:\Users\<user_name>\IdeaProjects\karate-expandtesting_api) and Execute ```mvn clean install``` to run all to removes previous build files while compiles the source code an execute the tests.
+- Open command prompt in the pom.xml directory (e.g. C:\Users\<user_name>\IdeaProjects\restassured-expandtesting_api) and Execute ```mvn clean install``` to run all to removes previous build files while compiles the source code an execute the tests.
 - Hit :point_right:**Testing** button on left side bar in IntelliJ and choose the tests to execute.
 - Go to TestRunner.java file and leave only the desired test combination uncommented, according to its tags. 
 - Execute ```mvn clean install -Dgroups="Negative"``` command to run only negative tests.
