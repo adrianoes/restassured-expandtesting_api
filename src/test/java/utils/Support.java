@@ -107,23 +107,6 @@ public class Support {
         return deleteResponse;
     }
 
-    public static class UserData {
-        public String name;
-        public String email;
-        public String id;
-        public String password;
-        public String token;
-
-        public UserData() {}
-
-        public UserData(String name, String email, String id, String password) {
-            this.name = name;
-            this.email = email;
-            this.id = id;
-            this.password = password;
-        }
-    }
-
     public static void deleteUserDataFile(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
@@ -134,6 +117,88 @@ public class Support {
             }
         } else {
             System.out.println("File not found: " + filePath);
+        }
+    }
+
+    public static Response createNoteForUserFromFile(String filePath) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        File file = new File(filePath);
+
+        // Lê os dados do usuário do arquivo
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Gerar dados da nota
+        Map<String, Object> noteData = FakerUtils.generateUserData();
+        String noteTitle = noteData.get("noteTitle").toString();
+        String noteDescription = noteData.get("noteDescription").toString();
+        String noteCategory = noteData.get("noteCategory").toString();
+
+        // Criar nota
+        Response createNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", userData.token)
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("title", noteTitle)
+                .formParam("description", noteDescription)
+                .formParam("category", noteCategory)
+                .log().all()
+                .when()
+                .post("/notes")
+                .then()
+                .log().all()
+                .statusCode(200)
+                .body("success", equalTo(true))
+                .body("status", equalTo(200))
+                .body("message", equalTo("Note successfully created"))
+                .body("data.title", equalTo(noteTitle))
+                .body("data.description", equalTo(noteDescription))
+                .body("data.category", equalTo(noteCategory))
+                .body("data.completed", equalTo(false))
+                .body("data.user_id", equalTo(userData.id))
+                .extract()
+                .response();
+
+        // Extrair dados da nota
+        String noteId = createNoteResponse.path("data.id");
+
+        // Atualizar o usuário com o ID da nota
+        userData.note_id = noteId;
+        userData.note_title = noteTitle;
+        userData.note_description = noteDescription;
+        userData.note_category = noteCategory;
+        userData.note_created_at = createNoteResponse.path("data.created_at");
+        userData.note_updated_at = createNoteResponse.path("data.updated_at");
+        userData.note_completed = createNoteResponse.path("data.completed");
+
+        // Salvar os dados de volta no arquivo
+        objectMapper.writeValue(file, userData);
+
+        return createNoteResponse;
+    }
+
+
+    public static class UserData {
+        public String name;
+        public String email;
+        public String id;
+        public String password;
+        public String token;
+
+        public String note_id;
+        public String note_title;
+        public String note_description;
+        public String note_category;
+        public String note_created_at;
+        public String note_updated_at;
+        public boolean note_completed;
+
+        public UserData() {}
+
+        public UserData(String name, String email, String id, String password) {
+            this.name = name;
+            this.email = email;
+            this.id = id;
+            this.password = password;
         }
     }
 

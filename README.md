@@ -41,11 +41,11 @@ API testing using [expandtesting docs](https://practice.expandtesting.com/notes/
   - :white_check_mark: **Generate code with onboarding tips**. 
 Hit :point_right: **Create**. 
 - Open IntelliJ IDEA, hit :point_right: **File**, hit :point_right: **Settings**, hit :point_right: **Plugins** and in the Marketplace tab, look for Karate and install the one from Karate Labs Inc.
-- See [TestNG](https://mvnrepository.com/artifact/org.testng/testng/7.4.0), copy the maven dependency code and paste it in the dependency tag. 
+- See [TestNG](https://mvnrepository.com/artifact/org.testng/testng/7.4.0), copy the maven dependency code and paste it in the dependency tag.
 - See [REST Assured](https://mvnrepository.com/artifact/io.rest-assured/rest-assured/4.4.0), copy the maven dependency code and paste it in the dependency tag.
-- See [Jackson Databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.15.0), copy the maven dependency code and paste it in the dependency tag. 
-- See [Java Faker](https://mvnrepository.com/artifact/com.github.javafaker/javafaker/1.0.2), copy the maven dependency code and paste it in the dependency tag. 
-- See [JSON In Java](https://mvnrepository.com/artifact/org.json/json/20210307), copy the maven dependency code and paste it in the dependency tag. 
+- See [Jackson Databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.15.0), copy the maven dependency code and paste it in the dependency tag.
+- See [Java Faker](https://mvnrepository.com/artifact/com.github.javafaker/javafaker/1.0.2), copy the maven dependency code and paste it in the dependency tag.
+- See [JSON In Java](https://mvnrepository.com/artifact/org.json/json/20210307), copy the maven dependency code and paste it in the dependency tag.
 - See [Maven Surefire Plugin](https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin/3.5.3), copy the maven dependency code and paste it in the dependency tag. . Hit :point_right: **Sync maven changes**. Your dependency tag in the pom.xml file, now, should be something like:
 
   ```
