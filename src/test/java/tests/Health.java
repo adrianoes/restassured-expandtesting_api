@@ -15,7 +15,7 @@ public class Health {
         RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
     }
 
-    @Test(groups = {"health"})
+@Test(groups = {"Health"})
     public void validarHealthCheck() {
         given()
                 .accept(ContentType.JSON) // Header: Accept: application/json
@@ -27,4 +27,5 @@ public class Health {
                 .body("status", equalTo(200))
                 .body("message", equalTo("Notes API is Running"));
     }
+
 }

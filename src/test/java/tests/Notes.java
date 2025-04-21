@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.*;
 
 public class Notes {
 
-    @Test
+@Test(groups = {"Notes"})
     public void createNote() throws IOException {
         RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
         String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
@@ -90,8 +90,108 @@ public class Notes {
         Support.deleteUserDataFile(filePath);
     }
 
-    @Test
-    public void getAllNotesCreatedByUser_withFullValidation() throws IOException {
+@Test(groups = {"Notes", "Negative"})
+    public void createNoteBR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+
+        File file = new File(filePath);
+
+        // Register
+        Support.registerUserToFile(filePath);
+
+        // Login
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Generate note data
+        Map<String, Object> noteData = FakerUtils.generateUserData();
+        String noteTitle = noteData.get("noteTitle").toString();
+        String noteDescription = noteData.get("noteDescription").toString();
+        String noteCategory = noteData.get("noteCategory").toString();
+
+        // Create Note
+        Response createNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", userData.token)
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("title", noteTitle)
+                .formParam("description", noteDescription)
+                .formParam("category", "a")
+                .log().all()
+                .when()
+                .post("/notes")
+                .then()
+                .log().all()
+                .statusCode(400)
+                .body("success", equalTo(false))
+                .body("status", equalTo(400))
+                .body("message", equalTo("Category must be one of the categories: Home, Work, Personal"))
+                .extract()
+                .response();
+
+        // Delete
+        Support.deleteUserFromFile(file.getAbsolutePath());
+
+        // Delete json file
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes", "Negative"})
+    public void createNoteUR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+
+        File file = new File(filePath);
+
+        // Register
+        Support.registerUserToFile(filePath);
+
+        // Login
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Generate note data
+        Map<String, Object> noteData = FakerUtils.generateUserData();
+        String noteTitle = noteData.get("noteTitle").toString();
+        String noteDescription = noteData.get("noteDescription").toString();
+        String noteCategory = noteData.get("noteCategory").toString();
+
+        // Create Note
+        Response createNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", '@' + userData.token)
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("title", noteTitle)
+                .formParam("description", noteDescription)
+                .formParam("category", noteCategory)
+                .log().all()
+                .when()
+                .post("/notes")
+                .then()
+                .log().all()
+                .statusCode(401)
+                .body("success", equalTo(false))
+                .body("status", equalTo(401))
+                .body("message", equalTo("Access token is not valid or has expired, you will need to login"))
+                .extract()
+                .response();
+
+        // Delete
+        Support.deleteUserFromFile(file.getAbsolutePath());
+
+        // Delete json file
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes"})
+    public void getAllNotes() throws IOException {
         RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
         String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
         File file = new File(filePath);
@@ -196,7 +296,92 @@ public class Notes {
         Support.deleteUserDataFile(filePath);
     }
 
-    @Test
+@Test(groups = {"Notes", "Negative"})
+    public void getAllNotesUR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+        File file = new File(filePath);
+
+        // Register and login user
+        Support.registerUserToFile(filePath);
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Read user data
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Generate note data using Faker
+        Map<String, Object> noteData = FakerUtils.generateUserData();
+        String noteTitle1 = noteData.get("noteTitle").toString();
+        String noteDescription1 = noteData.get("noteDescription").toString();
+        String noteCategory1 = noteData.get("noteCategory").toString();
+
+        String noteTitle2 = noteData.get("noteTitle2").toString();
+        String noteDescription2 = noteData.get("noteDescription2").toString();
+        String noteCategory2 = noteData.get("noteCategory2").toString();
+
+        // Create first note
+        Response firstNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", userData.token)
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("title", noteTitle1)
+                .formParam("description", noteDescription1)
+                .formParam("category", noteCategory1)
+                .log().all()
+                .when()
+                .post("/notes")
+                .then()
+                .log().all()
+                .statusCode(200)
+                .extract()
+                .response();
+
+        String note1Id = firstNoteResponse.path("data.id");
+        String note1CreatedAt = firstNoteResponse.path("data.created_at");
+        String note1UpdatedAt = firstNoteResponse.path("data.updated_at");
+
+        // Create second note
+        Response secondNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", userData.token)
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("title", noteTitle2)
+                .formParam("description", noteDescription2)
+                .formParam("category", noteCategory2)
+                .log().all()
+                .when()
+                .post("/notes")
+                .then()
+                .log().all()
+                .statusCode(200)
+                .extract()
+                .response();
+
+        String note2Id = secondNoteResponse.path("data.id");
+        String note2CreatedAt = secondNoteResponse.path("data.created_at");
+        String note2UpdatedAt = secondNoteResponse.path("data.updated_at");
+
+        // Retrieve all notes for user and validate
+        given()
+                .header("accept", "application/json")
+                .header("x-auth-token", '@' + userData.token)
+                .log().all()
+                .when()
+                .get("/notes")
+                .then()
+                .log().all()
+                .statusCode(401)
+                .body("success", equalTo(false))
+                .body("status", equalTo(401))
+                .body("message", equalTo("Access token is not valid or has expired, you will need to login"));
+
+        // Cleanup
+        Support.deleteUserFromFile(file.getAbsolutePath());
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes"})
     public void getNoteById() throws IOException {
         RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
         String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
@@ -242,7 +427,45 @@ public class Notes {
         Support.deleteUserDataFile(filePath);
     }
 
-    @Test
+@Test(groups = {"Notes", "Negative"})
+    public void getNoteByIdUR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+        File file = new File(filePath);
+
+        // Register and Login User, saving data to file
+        Support.registerUserToFile(filePath);
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Create note and save note ID and other data to file
+        Support.createNoteForUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Get Note using the note_id from the user data
+        Response getNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", '@' + userData.token)
+                .log().all()
+                .when()
+                .get("/notes/" + userData.note_id)
+                .then()
+                .log().all()
+                .statusCode(401)
+                .body("success", equalTo(false))
+                .body("status", equalTo(401))
+                .body("message", equalTo("Access token is not valid or has expired, you will need to login"))
+                .extract()
+                .response();
+
+        // Clean up after test
+        Support.deleteUserFromFile(file.getAbsolutePath());
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes"})
     public void updateNoteById() throws IOException {
         RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
         String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
@@ -300,7 +523,107 @@ public class Notes {
         Support.deleteUserDataFile(filePath);
     }
 
-    @Test
+@Test(groups = {"Notes", "Negative"})
+    public void updateNoteByIdBR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+        File file = new File(filePath);
+
+        // Register and Login User, saving data to file
+        Support.registerUserToFile(filePath);
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Create note and save note ID and other data to file
+        Support.createNoteForUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Generate note data using FakerUtils
+        Map<String, Object> noteData = FakerUtils.generateUserData();
+        String updatedTitle = noteData.get("noteUpdatedTitle").toString();  // from FakerUtils
+        String updatedDescription = noteData.get("noteUpdatedDescription").toString();  // from FakerUtils
+        String updatedCategory = noteData.get("noteUpdatedCategory").toString();  // from FakerUtils
+        Boolean updatedCompleted = (Boolean) noteData.get("noteUpdatedCompleted");  // from FakerUtils
+
+        // Perform the PUT request to update the note
+        Response updateNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", userData.token)  // Using userData.token directly
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("title", updatedTitle)
+                .formParam("description", updatedDescription)
+                .formParam("completed", updatedCompleted)
+                .formParam("category", "a")
+                .log().all()
+                .when()
+                .put("/notes/" + userData.note_id)  // Using userData.note_id directly
+                .then()
+                .log().all()
+                .statusCode(400)
+                .body("success", equalTo(false))
+                .body("status", equalTo(400))
+                .body("message", equalTo("Category must be one of the categories: Home, Work, Personal"))
+                .extract()
+                .response();
+
+        // Clean up after test
+        Support.deleteUserFromFile(file.getAbsolutePath());
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes", "Negative"})
+    public void updateNoteByIdUR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+        File file = new File(filePath);
+
+        // Register and Login User, saving data to file
+        Support.registerUserToFile(filePath);
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Create note and save note ID and other data to file
+        Support.createNoteForUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Generate note data using FakerUtils
+        Map<String, Object> noteData = FakerUtils.generateUserData();
+        String updatedTitle = noteData.get("noteUpdatedTitle").toString();  // from FakerUtils
+        String updatedDescription = noteData.get("noteUpdatedDescription").toString();  // from FakerUtils
+        String updatedCategory = noteData.get("noteUpdatedCategory").toString();  // from FakerUtils
+        Boolean updatedCompleted = (Boolean) noteData.get("noteUpdatedCompleted");  // from FakerUtils
+
+        // Perform the PUT request to update the note
+        Response updateNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", '@' + userData.token)  // Using userData.token directly
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("title", updatedTitle)
+                .formParam("description", updatedDescription)
+                .formParam("completed", updatedCompleted)
+                .formParam("category", updatedCategory)
+                .log().all()
+                .when()
+                .put("/notes/" + userData.note_id)  // Using userData.note_id directly
+                .then()
+                .log().all()
+                .statusCode(401)
+                .body("success", equalTo(false))
+                .body("status", equalTo(401))
+                .body("message", equalTo("Access token is not valid or has expired, you will need to login"))
+                .extract()
+                .response();
+
+        // Clean up after test
+        Support.deleteUserFromFile(file.getAbsolutePath());
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes"})
     public void updateNoteStatusById() throws IOException {
         RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
         String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
@@ -349,7 +672,95 @@ public class Notes {
         Support.deleteUserDataFile(filePath);
     }
 
-    @Test
+@Test(groups = {"Notes", "Negative"})
+    public void updateNoteStatusByIdBR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+        File file = new File(filePath);
+
+        // Register and Login User, saving data to file
+        Support.registerUserToFile(filePath);
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Create note and save note ID and other data to file
+        Support.createNoteForUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Generate note data using FakerUtils
+        Map<String, Object> noteData = FakerUtils.generateUserData();
+        Boolean updatedCompleted = (Boolean) noteData.get("noteUpdatedCompleted");  // from FakerUtils
+
+        // Perform the PATCH request to update only the 'completed' status of the note
+        Response updateNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", userData.token)  // Using userData.token directly
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("completed", "a")  // Only updating the 'completed' field
+                .log().all()
+                .when()
+                .patch("/notes/" + userData.note_id)  // Using PATCH instead of PUT
+                .then()
+                .log().all()
+                .statusCode(400)
+                .body("success", equalTo(false))
+                .body("status", equalTo(400))
+                .body("message", equalTo("Note completed status must be boolean"))
+                .extract()
+                .response();
+
+        // Clean up after test
+        Support.deleteUserFromFile(file.getAbsolutePath());
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes", "Negative"})
+    public void updateNoteStatusByIdUR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+        File file = new File(filePath);
+
+        // Register and Login User, saving data to file
+        Support.registerUserToFile(filePath);
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Create note and save note ID and other data to file
+        Support.createNoteForUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Generate note data using FakerUtils
+        Map<String, Object> noteData = FakerUtils.generateUserData();
+        Boolean updatedCompleted = (Boolean) noteData.get("noteUpdatedCompleted");  // from FakerUtils
+
+        // Perform the PATCH request to update only the 'completed' status of the note
+        Response updateNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", '@' + userData.token)  // Using userData.token directly
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .formParam("completed", updatedCompleted)  // Only updating the 'completed' field
+                .log().all()
+                .when()
+                .patch("/notes/" + userData.note_id)  // Using PATCH instead of PUT
+                .then()
+                .log().all()
+                .statusCode(401)
+                .body("success", equalTo(false))
+                .body("status", equalTo(401))
+                .body("message", equalTo("Access token is not valid or has expired, you will need to login"))
+                .extract()
+                .response();
+
+        // Clean up after test
+        Support.deleteUserFromFile(file.getAbsolutePath());
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes"})
     public void deleteNoteById() throws IOException {
         RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
         String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
@@ -380,6 +791,85 @@ public class Notes {
                 .body("success", equalTo(true))  // Ensure success is true
                 .body("status", equalTo(200))  // Validate the status code
                 .body("message", equalTo("Note successfully deleted"))  // Validate the success message
+                .extract()
+                .response();
+
+        // Clean up after test
+        Support.deleteUserFromFile(file.getAbsolutePath());
+        Support.deleteUserDataFile(filePath);
+    }
+
+@Test(groups = {"Notes", "Negative"})
+    public void deleteNoteByIdBR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+        File file = new File(filePath);
+
+        // Register and Login User, saving data to file
+        Support.registerUserToFile(filePath);
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Create note and save note ID and other data to file
+        Support.createNoteForUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Perform the DELETE request to delete the note
+        Response deleteNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", userData.token)  // Using userData.token directly
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .log().all()
+                .when()
+                .delete("/notes/" + '@' + userData.note_id)  // DELETE request to remove the note
+                .then()
+                .log().all()
+                .statusCode(400)
+                .body("success", equalTo(false))  // Ensure success is true
+                .body("status", equalTo(400))  // Validate the status code
+                .body("message", equalTo("Note ID must be a valid ID"))  // Validate the success message
+                .extract()
+                .response();
+
+        // Clean up after test
+        Support.deleteUserFromFile(file.getAbsolutePath());
+        Support.deleteUserDataFile(filePath);
+
+    }
+
+@Test(groups = {"Notes", "Negative"})
+    public void deleteNoteByIdUR() throws IOException {
+        RestAssured.baseURI = "https://practice.expandtesting.com/notes/api";
+        String filePath = "src/test/fixtures/userData-" + System.currentTimeMillis() + ".json";
+        File file = new File(filePath);
+
+        // Register and Login User, saving data to file
+        Support.registerUserToFile(filePath);
+        Support.loginUserFromFile(file.getAbsolutePath());
+
+        // Create note and save note ID and other data to file
+        Support.createNoteForUserFromFile(file.getAbsolutePath());
+
+        // Read user data from file
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserData userData = objectMapper.readValue(file, UserData.class);
+
+        // Perform the DELETE request to delete the note
+        Response deleteNoteResponse = given()
+                .header("accept", "application/json")
+                .header("x-auth-token", '@' + userData.token)  // Using userData.token directly
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                .log().all()
+                .when()
+                .delete("/notes/" + '@' + userData.note_id)  // DELETE request to remove the note
+                .then()
+                .log().all()
+                .statusCode(401)
+                .body("success", equalTo(false))  // Ensure success is true
+                .body("status", equalTo(401))  // Validate the status code
+                .body("message", equalTo("Access token is not valid or has expired, you will need to login"))  // Validate the success message
                 .extract()
                 .response();
 

@@ -14,7 +14,7 @@ Commiting for second time and so on:
 
 git status
 git add .
-git commit -m "health, user and note testes done, miss negative tests and input tags"
+git commit -m "negative and tags done"
 git push -u origin main 
 
 need to fix report, converting it to html or catching the right html report in target folder, close the app between tests 
@@ -23,16 +23,11 @@ need to fix report, converting it to html or catching the right html report in t
 size limit----\-------------------------------------------------------------------------\
 commits history are placed in C:\restassured-expandtesting_api\.git\logs\refs\heads
 
-java.lang.NullPointerException: Cannot invoke "org.openqa.selenium.WebDriver.findElement(org.openqa.selenium.By)" because "driver" is null
-	at org.openqa.selenium.support.ui.ExpectedConditions$7.apply(ExpectedConditions.java:194)
+@Tag("Health")
 
 
+@Tag("Notes")
+@Tag("Negative")
 
-new request
-tvresult
-spiner
-
-
-mvn clean test -Dcucumber.filter.name="Note status is attempted to be updated with invalid token"
-
-public void inPage() throws InterruptedException { WebDriverWait wait = new WebDriverWait(driver, 100); wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"container\"]/div/div[3]/div[2]/div[1]/div[1]/div[2]/div/ul/li[2]/form/button"))); boolean enabled = driver.findElement(By.xpath("//*[@id=\"container\"]/div/div[3]/div[2]/div[1]/div[1]/div[2]/div/ul/li[2]/form/button")).isEnabled(); boolean visible = driver.findElement(By.xpath("//*[@id=\"container\"]/div/div[3]/div[2]/div[1]/div[1]/div[2]/div/ul/li[2]/form/button")).isDisplayed(); }
+@Tag("Users")
+@Tag("Negative")
